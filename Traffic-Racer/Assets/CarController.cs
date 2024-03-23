@@ -18,6 +18,8 @@ public class CarController : MonoBehaviour
     private bool turningLeft = false;
     private bool turningRight = false;
 
+    public float raycastDistance = 5f; // Adjust this value to set the distance of raycast for detecting traffic cars
+
     private float currentSpeed; // Current speed of the car
 
     private void Start()
@@ -62,6 +64,8 @@ public class CarController : MonoBehaviour
         {
             transform.Rotate(Vector3.up, turnSpeed * Time.deltaTime);
         }
+
+        
     }
 
     public void OnAccelerateButtonDown()
@@ -127,5 +131,18 @@ public class CarController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         spawnManager.SpawnTriggerEntered();
+    }
+
+    public void OnHornButtonPress()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity))
+        {
+            TrafficCar trafficCar = hit.collider.GetComponent<TrafficCar>();
+            if (trafficCar != null)
+            {
+                trafficCar.MoveAside();
+            }
+        }
     }
 }
